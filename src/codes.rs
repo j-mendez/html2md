@@ -12,8 +12,10 @@ impl CodeHandler {
 
     /// Used in both starting and finishing handling
     fn do_handle(&mut self, printer: &mut StructuredPrinter, start: bool) {
-        let immediate_parent = printer.parent_chain.last().unwrap().to_owned();
-        if self.code_type == "code" && immediate_parent == "pre" {
+        if self.code_type == "code" && match printer.parent_chain.last() {
+            Some(s) => s == "pre",
+            _ => false
+        } {
             // we are already in "code" mode
             return;
         }

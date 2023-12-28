@@ -48,7 +48,12 @@ impl TagHandler for ListItemHandler {
                 return;
             }
 
-            self.list_type = nearest_parent_list.unwrap().to_string();
+            match nearest_parent_list {
+                Some(s) => {
+                    self.list_type = s.to_string();
+                }
+                _ => ()
+            }
         }
 
         if printer.data.chars().last() != Some('\n') {

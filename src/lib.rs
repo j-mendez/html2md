@@ -303,7 +303,10 @@ pub extern fn parse(html: *const c_char) -> *const c_char {
     let in_html = unsafe { CStr::from_ptr(html) };
     let out_md = parse_html(&in_html.to_string_lossy());
 
-    CString::new(out_md).unwrap().into_raw()
+    match CString::new(out_md) {
+        Ok(s) => s.into_raw(),
+        _ => std::ptr::null()
+    }
 }
 
 /// Expose the JNI interface for android below
