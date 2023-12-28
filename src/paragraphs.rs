@@ -28,7 +28,7 @@ impl TagHandler for ParagraphHandler {
         match self.paragraph_type.as_ref() {
             "p" => { printer.insert_newline(); printer.insert_newline(); }
             "hr" => { printer.insert_newline(); printer.append_str("---"); printer.insert_newline(); }
-            "br" => printer.append_str("  \n"),
+            "br" => printer.append_str("  \n"), // we prob want nbsp here.
             _ => {}
         }
     }

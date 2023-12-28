@@ -125,6 +125,7 @@ fn walk(input: &Handle, result: &mut StructuredPrinter, custom: &HashMap<String,
                 let minified_text = EXCESSIVE_WHITESPACE_PATTERN.replace_all(&text, " ");
                 let minified_text = minified_text.trim_matches(|ch: char| ch == '\n' || ch == '\r');
                 result.append_str(&minified_text);
+
             }
         }
         NodeData::Comment { .. } => {}, // ignore comments

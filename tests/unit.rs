@@ -10,6 +10,13 @@ fn test_dumb() {
 }
 
 #[test]
+// fixme
+fn test_space() {
+    let md = parse_html(r#"<p><a href="http://ya.ru">APOSIMZ</a></p>\n"#);
+    assert_eq!(md, "[APOSIMZ](http://ya.ru)\n\n\\\\n")
+}
+
+#[test]
 fn test_anchor() {
     let md = parse_html(r#"<p><a href="http://ya.ru">APOSIMZ</a></p>"#);
     assert_eq!(md, "[APOSIMZ](http://ya.ru)")
