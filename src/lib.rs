@@ -1,10 +1,9 @@
 use lazy_static::lazy_static;
 
 use std::boxed::Box;
-use std::borrow::Borrow;
 use std::collections::HashMap;
 
-use std::os::raw::{c_char};
+use std::os::raw::c_char;
 use std::ffi::{CString, CStr};
 
 use regex::Regex;
@@ -70,8 +69,7 @@ pub fn parse_html_custom(html: &str, custom: &HashMap<String, Box<dyn TagHandler
     let dom = parse_document(RcDom::default(), ParseOpts::default()).from_utf8().read_from(&mut html.as_bytes()).unwrap();
     let mut result = StructuredPrinter::default();
     walk(&dom.document, &mut result, custom);
-
-    return clean_markdown(&result.data);
+    clean_markdown(&result.data)
 }
 
 /// Main function of this library. Parses incoming HTML, converts it into Markdown
@@ -89,13 +87,13 @@ pub fn parse_html_extended(html: &str) -> String {
     struct SpanAsIsTagFactory;
     impl TagHandlerFactory for SpanAsIsTagFactory {
         fn instantiate(&self) -> Box<dyn TagHandler> {
-            return Box::new(HtmlCherryPickHandler::default());
+            Box::new(HtmlCherryPickHandler::default())
         }
     }
 
     let mut tag_factory: HashMap<String, Box<dyn TagHandlerFactory>> = HashMap::new();
     tag_factory.insert(String::from("span"), Box::new(SpanAsIsTagFactory{}));
-    return parse_html_custom(html, &tag_factory);
+    parse_html_custom(html, &tag_factory)
 }
 
 /// Recursively walk through all DOM tree and handle all elements according to
@@ -190,7 +188,7 @@ fn walk(input: &Handle, result: &mut StructuredPrinter, custom: &HashMap<String,
             continue;
         }
 
-        walk(child.borrow(), result, custom);
+        walk(&child, result, custom);
 
         match child.data {
             NodeData::Element { ref name, .. } => result.siblings.get_mut(&current_depth).unwrap().push(name.local.to_string()),
@@ -223,7 +221,7 @@ fn escape_markdown(result: &StructuredPrinter, text: &str) -> String {
 
     // no handling of more complicated cases such as
     // ![] or []() ones, for now this will suffice
-    return data;
+    data
 }
 
 /// Called after all processing has been finished
@@ -237,7 +235,7 @@ fn clean_markdown(text: &str) -> String {
     let intermediate = LEADING_NEWLINES_PATTERN.replace_all(&intermediate, "");       // trim leading newlines
     let intermediate = LAST_WHITESPACE_PATTERN.replace_all(&intermediate, "");        // trim last newlines
 
-    return intermediate.into_owned();
+    intermediate.into_owned()
 }
 
 /// Intermediate result of HTML -> Markdown conversion.
@@ -295,7 +293,7 @@ pub trait TagHandler {
     fn after_handle(&mut self, printer: &mut StructuredPrinter);
 
     fn skip_descendants(&self) -> bool {
-        return false;
+        false
     }
 }
 
